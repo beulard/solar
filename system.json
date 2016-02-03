@@ -1,0 +1,95 @@
+{
+	"bodies" : [
+		{	
+			"name" : "Sun",
+			"color" : [ 0, 0, 0, 0 ],
+			"orbit" : {
+				"semimajor" : 0,
+				"eccentricity" : 0,
+				"inclination" : 0,
+				"arg_of_peri" : 0
+			}
+				
+		},
+		{
+			"name" : "Mercury",
+			"color" : [ 0, 154, 185, 255 ],
+			"orbit" : {
+				"semimajor" : 0.387098,
+				"eccentricity" :  0.205630,
+				"inclination" : 7.005,
+				"arg_of_peri" : 29.124
+			}
+		},
+		{
+			"name" : "Venus",
+			"color" : [ 84, 65, 255, 255 ],
+			"orbit" : {
+				"semimajor" : 0.723332,
+				"eccentricity" :  0.006772,
+				"inclination" : 3.39458,
+				"arg_of_peri" : 54.8842
+			}
+		},
+		{
+			"name" : "Earth",
+			"color" : [ 0, 0, 255, 255 ],
+			"orbit" : {
+				"semimajor" : 1,
+				"eccentricity" :  0.0167086,
+				"inclination" : 0,
+				"arg_of_peri" : 114.20783
+			}
+		},
+		{
+			"name" : "Mars",
+			"color" : [ 255, 94, 0, 255 ],
+			"orbit" : {
+				"semimajor" : 1.523679,
+				"eccentricity" :  0.0934,
+				"inclination" : 1.850,
+				"arg_of_peri" : 286.502
+			}
+		},
+		{
+			"name" : "Jupiter",
+			"color" : [ 67, 67, 67, 255 ],
+			"orbit" : {
+				"semimajor" : 5.20260,
+				"eccentricity" :  0.048498,
+				"inclination" : 1.303,
+				"arg_of_peri" : 273.867
+			}
+		},
+		{
+			"name" : "Saturn",
+			"color" : [ 54, 25, 97, 255 ],
+			"orbit" : {
+				"semimajor" : 9.554909,
+				"eccentricity" :  0.05555,
+				"inclination" : 2.485240,
+				"arg_of_peri" : 339.392
+			}
+		},
+		{
+			"name" : "Uranus",
+			"color" : [ 148, 0, 94, 255 ],
+			"orbit" : {
+				"semimajor" : 19.2184,
+				"eccentricity" :  0.046381,
+				"inclination" : 0.773,
+				"arg_of_peri" : 96.998857
+			}
+		},
+		{
+			"name" : "Neptune",
+			"color" : [ 0, 67, 154, 255 ],
+			"orbit" : {
+				"semimajor" : 30.110387,
+				"eccentricity" :  0.009456,
+				"inclination" : 1.767975,
+				"arg_of_peri" : 276.336
+			}
+		}
+	]
+}
