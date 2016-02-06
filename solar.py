@@ -1,30 +1,120 @@
 from __future__ import division
 import sfml as sf
-import json
-import collections
 import math
 import scene
 import resource
+import body
 
-def parse_json(file):
-	f = open(file,  "r")
-	return json.load(f)
+class Solar:
+	##	Borg object
+	__shared_state = {}
 
-	
+	def __init__(self, res_man, scn):
+		self.__dict__ = self.__shared_state
+
+		###	Utilities given by the caller: resource manager and initialized scene with open window
+		self.res = res_man
+		self.scn = scn
+
+		###	Objects of the simulation
+		##	the background sprite
+		self.background = None
+		##	the solar system data
+		self.system_data = None
+		##	the actual bodies
+		self.bodies = {}
+
+		##	sfml views: the background view, which does not move, and the solar system view which can be zoomed and translated
+		self.bgview = None
+		self.bodyview = None
+
+		##	sprite of the Sun
+		self.sun = None
+
+	def init(self):
+		##	load some textures
+		#	bakground texture
+		stars_t = self.res.load_tex("stars.jpg")
+		#	sun texture
+		sun_t = self.res.load_tex("sun.png")
+
+		##	set up the background
+		self.background = sf.Sprite(stars_t)
+		scale = self.scn.get_window_size().x / stars_t.size.x
+		self.background.scale((scale, scale))
+		self.background.move((0, 0))
+		#	make it a little fainter
+		self.background.color = sf.Color(255, 255, 255, 150)
+
+		##	parse the solar system data
+		self.system_data = resource.parse_json("system.json")
+
+		##	populate a dictionary of bodies
+		for body_data in self.system_data["bodies"]:
+			self.bodies[body_data["name"]] = body.Body()
+			self.bodies[body_data["name"]].populate(body_data)
+
+
+		self.sun = sf.Sprite(sun_t)
+		self.sun.origin = (sun_t.size.x / 2., sun_t.size.y / 2.)
+		self.sun.scale((0.001, 0.001))
+
+		##	initialize the views
+		self.bgview = self.scn.default_view()
+		self.bodyview = self.scn.default_view()
+		
+		#	TODO setup so that initial view shows orbit of earth
+		self.bodyview.move(-self.scn.size().x / 2., -self.scn.size().y / 2.)
+		self.bodyview.zoom(0.005)
+
+	def update(self):
+		##	handle inputs
+		if sf.Keyboard.is_key_pressed(sf.Keyboard.A):
+			self.bodyview.move(-0.02, 0)
+		if sf.Keyboard.is_key_pressed(sf.Keyboard.D):
+			self.bodyview.move(0.02, 0)
+		if sf.Keyboard.is_key_pressed(sf.Keyboard.S):
+			self.bodyview.move(0, 0.02)
+		if sf.Keyboard.is_key_pressed(sf.Keyboard.W):
+			self.bodyview.move(0, -0.02)
+		if sf.Keyboard.is_key_pressed(sf.Keyboard.E):
+			self.bodyview.zoom(0.99)
+		if sf.Keyboard.is_key_pressed(sf.Keyboard.Q):
+			self.bodyview.zoom(1.01)
+		
+		##	small rotating effect on the Sun
+		self.sun.rotate(0.01)
+
+	def render(self):
+		self.scn.clear()
+		self.scn.draw(self.background, self.bgview)
+
+		for k in self.bodies:
+			self.scn.draw(self.bodies[k].ellipse, self.bodyview)
+		self.scn.draw(self.sun, self.bodyview)
+		self.scn.render()
+
+'''
 def main():
 
 	##	read settings from settings.json and store them
 	settings = parse_json("settings.json")
 
+	##	initialize resource manager
+	res_man = resource.Manager()
+
+	##	open window
+	scn = scene.Scene()
+	scn.open_window(sf.VideoMode(settings["window"]["width"], settings["window"]["height"]), settings["window"]["name"], sf.window.Style.CLOSE, sf.ContextSettings(0, 0, settings["window"]["antialias"], 2, 0))
+	scn.set_window_icon(sf.Image.from_file("sun.png"))
+
+
+
 	##	get list of system bodies from a json file
 	system_data = parse_json("system.json")
 
-	#	initialize resource manager
-	res_man = resource.Manager()
-	background_t = res_man.load_tex("stars.jpg")
-
 	##	load background image
-	#background_t = sf.Texture.from_file("stars.jpg")
+	background_t = res_man.load_tex("stars.jpg")
 	background = sf.Sprite(background_t)
 	scale = settings["window"]["width"] / background_t.size.x
 	background.scale((scale, scale))
@@ -32,10 +122,6 @@ def main():
 	##	make it a little fainter
 	background.color = sf.Color(255, 255, 255, 150)
 
-	##	open window
-	scn = scene.Scene()
-	scn.open_window(sf.VideoMode(settings["window"]["width"], settings["window"]["height"]), settings["window"]["name"], sf.window.Style.CLOSE, sf.ContextSettings(0, 0, settings["window"]["antialias"], 2, 0))
-	scn.set_window_icon(sf.Image.from_file("sun.png"))
 	
 	##	time to process some data and populate a dictionary
 	##	first define a C-struct like class called Body that will hold useful information for drawing bodies and their trajectories
@@ -128,6 +214,4 @@ def main():
 		scn.draw(sun, bodyview)
 		scn.render()
 
-
-if __name__ == "__main__":
-	main()
+'''

@@ -19,6 +19,9 @@ class Scene:
 	def close_window(self):
 		self.window.close()
 
+	def get_window_size(self):
+		return self.window.size
+
 	##	is the window still open?
 	def running(self):
 		return self.window.is_open

@@ -1,4 +1,10 @@
 import sfml as sf
+import json
+
+##	small helper function
+def parse_json(file):
+	f = open(file,  "r")
+	return json.load(f)
 
 ###	Loads and returns resources like sfml textures and fonts
 class Manager:
@@ -19,3 +25,6 @@ class Manager:
 	def load_font(self, file):
 		self.fonts[file] = sf.Font.from_file(file)
 		return self.fonts[file]
+
+	def get_tex(self, file):
+		return self.textures[file]
