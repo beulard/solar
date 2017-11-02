@@ -1,4 +1,4 @@
-import sfml as sf
+from sfml import sf
 import math
 
 ##	Body holds an orbiting body's properties (physical and graphical). This data can be populated with the 'populate' function.

@@ -1,7 +1,7 @@
 import resource
 import scene
 import solar
-import sfml as sf
+from sfml import sf
 
 def main():
 	##	read settings from settings.json and store them
@@ -12,7 +12,7 @@ def main():
 
 	##	open window
 	scn = scene.Scene()
-	scn.open_window(sf.VideoMode(settings["window"]["width"], settings["window"]["height"]), settings["window"]["name"], sf.window.Style.CLOSE, sf.ContextSettings(0, 0, settings["window"]["antialias"], 2, 0))
+	scn.open_window(sf.VideoMode(settings["window"]["width"], settings["window"]["height"]), settings["window"]["name"], sf.Style.CLOSE, sf.ContextSettings(0, 0, settings["window"]["antialias"], 2, 0))
 	scn.set_window_icon(sf.Image.from_file("sun.png"))
 
 	##	send all that to the app

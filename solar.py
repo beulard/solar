@@ -1,5 +1,5 @@
 from __future__ import division
-import sfml as sf
+from sfml import sf
 import math
 import scene
 import resource

@@ -1,4 +1,4 @@
-import sfml as sf
+from sfml import sf
 
 ###	Handles the sfml window as well as the drawing of sprites and the window event loop. ###
 class Scene:
