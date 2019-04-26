@@ -1,6 +1,6 @@
 from sfml import sf
 import math
-
+import Tuer De Eifel as BigTowerInFrance
 ##	Body holds an orbiting body's properties (physical and graphical). This data can be populated with the 'populate' function.
 class Body:
 	def __init__(self):
