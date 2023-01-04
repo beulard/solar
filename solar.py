@@ -1,9 +1,9 @@
-from __future__ import division
-from sfml import sf
+import pygame
 import math
 import scene
 import resource
 import body
+import random
 
 class Solar:
 	##	Borg object
@@ -33,66 +33,91 @@ class Solar:
 
 	def init(self):
 		##	load some textures
-		#	bakground texture
-		stars_t = self.res.load_tex("stars.jpg")
 		#	sun texture
-		sun_t = self.res.load_tex("sun.png")
+		self.sun_t = self.res.load_tex("resources/sun_fullres_transparent.png")
+		#self.sun_t = self.sun_t.convert_alpha()
+		self.sun = pygame.transform.scale(self.sun_t, (50, 50))
 
+		screen_w, screen_h = pygame.display.get_window_size()
 		##	set up the background
-		self.background = sf.Sprite(stars_t)
-		scale = self.scn.get_window_size().x / stars_t.size.x
-		self.background.scale((scale, scale))
-		self.background.move((0, 0))
-		#	make it a little fainter
-		self.background.color = sf.Color(255, 255, 255, 150)
+		self.background = pygame.Surface((screen_w, screen_h))
+		## instead of using a texture for the background, let's build it
+		## procedurally by drawing stars uniformly on a black surface
+		self.background.fill((0, 0, 0))
+		# TODO add colours and glow to background stars
+		background_star_density = 0.0075 # stars / pixel
+		background_area = screen_w * screen_h
+
+		def clamp(x, low, high):
+			return max(min(x, high), low)
+
+		for i in range(int(background_area * background_star_density)):
+			x = random.randint(0, screen_w)
+			y = random.randint(0, screen_h)
+			# Take the radius from a Gaussian centered on zero with sigma=1
+			radius = int(abs(random.gauss(0, 1)))
+			intensity = int((random.gauss(150, 50)))
+			blueness = int(random.gauss(0, 20))
+			red = clamp(intensity - blueness, 0, 255)
+			green = clamp(intensity, 0, 255)
+			blue = clamp(intensity + blueness, 0, 255)
+			pygame.draw.circle(self.background, (red, green, blue), (x, y), radius)
+
 
 		##	parse the solar system data
 		self.system_data = resource.parse_json("system.json")
 
 		##	populate a dictionary of bodies
-		for body_data in self.system_data["bodies"]:
-			self.bodies[body_data["name"]] = body.Body()
-			self.bodies[body_data["name"]].populate(body_data)
+		# for body_data in self.system_data["bodies"]:
+		# 	self.bodies[body_data["name"]] = body.Body()
+		# 	self.bodies[body_data["name"]].populate(body_data)
 
 
-		self.sun = sf.Sprite(sun_t)
-		self.sun.origin = (sun_t.size.x / 2., sun_t.size.y / 2.)
-		self.sun.scale((0.001, 0.001))
+		#self.sun.origin = (sun_t.size.x / 2., sun_t.size.y / 2.)
+		#self.sun.scale((0.001, 0.001))
 
-		##	initialize the views
-		self.bgview = self.scn.default_view()
-		self.bodyview = self.scn.default_view()
+		# ##	initialize the views
+		# self.bgview = self.scn.default_view()
+		# self.bodyview = self.scn.default_view()
 		
-		#	TODO setup so that initial view shows orbit of earth
-		self.bodyview.move(-self.scn.size().x / 2., -self.scn.size().y / 2.)
-		self.bodyview.zoom(0.005)
+		# #	TODO setup so that initial view shows orbit of earth
+		# self.bodyview.move(-self.scn.size().x / 2., -self.scn.size().y / 2.)
+		# self.bodyview.zoom(0.005)
 
 	def update(self):
-		##	handle inputs
-		if sf.Keyboard.is_key_pressed(sf.Keyboard.A):
-			self.bodyview.move(-0.02, 0)
-		if sf.Keyboard.is_key_pressed(sf.Keyboard.D):
-			self.bodyview.move(0.02, 0)
-		if sf.Keyboard.is_key_pressed(sf.Keyboard.S):
-			self.bodyview.move(0, 0.02)
-		if sf.Keyboard.is_key_pressed(sf.Keyboard.W):
-			self.bodyview.move(0, -0.02)
-		if sf.Keyboard.is_key_pressed(sf.Keyboard.E):
-			self.bodyview.zoom(0.99)
-		if sf.Keyboard.is_key_pressed(sf.Keyboard.Q):
-			self.bodyview.zoom(1.01)
+		# ##	handle inputs
+		# if sf.Keyboard.is_key_pressed(sf.Keyboard.A):
+		# 	self.bodyview.move(-0.02, 0)
+		# if sf.Keyboard.is_key_pressed(sf.Keyboard.D):
+		# 	self.bodyview.move(0.02, 0)
+		# if sf.Keyboard.is_key_pressed(sf.Keyboard.S):
+		# 	self.bodyview.move(0, 0.02)
+		# if sf.Keyboard.is_key_pressed(sf.Keyboard.W):
+		# 	self.bodyview.move(0, -0.02)
+		# if sf.Keyboard.is_key_pressed(sf.Keyboard.E):
+		# 	self.bodyview.zoom(0.99)
+		# if sf.Keyboard.is_key_pressed(sf.Keyboard.Q):
+		# 	self.bodyview.zoom(1.01)
 		
 		##	small rotating effect on the Sun
-		self.sun.rotate(0.01)
+		#self.sun.rotate(0.01)
+		pass
 
-	def render(self):
-		self.scn.clear()
-		self.scn.draw(self.background, self.bgview)
+	def draw(self):
+		# self.scn.clear()
+		# self.scn.draw(self.background, self.bgview)
 
-		for k in self.bodies:
-			self.scn.draw(self.bodies[k].ellipse, self.bodyview)
-		self.scn.draw(self.sun, self.bodyview)
-		self.scn.render()
+		# for k in self.bodies:
+		# 	self.scn.draw(self.bodies[k].ellipse, self.bodyview)
+		# self.scn.draw(self.sun, self.bodyview)
+		# self.scn.render()
+		#self.sun = pygame.transform.rotate(surface, angle)(self.sun, 0.0001)
+		self.scn.window.blit(self.background, (0, 0))
+		sz = self.sun.get_size()
+		scale = (1 + 0.1 * math.cos(2 * math.pi * 0.001 * pygame.time.get_ticks()))
+		#scaled = pygame.transform.scale(self.sun, (sz[0] * scale, sz[0] * scale))
+		rotated = pygame.transform.rotozoom(self.sun, -2 * math.pi * 0.001 * pygame.time.get_ticks(), 1)
+		self.scn.window.blit(rotated, rotated.get_rect(center=(0, 0)))
 
 '''
 def main():

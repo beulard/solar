@@ -1,4 +1,4 @@
-from sfml import sf
+import pygame
 import math
 
 ##	Body holds an orbiting body's properties (physical and graphical). This data can be populated with the 'populate' function.
@@ -15,9 +15,9 @@ class Body:
 		##	argument of perihelion
 		self.peri = 0
 		##	orbit color
-		self.col = sf.Color.BLACK
+		self.col = (0, 0, 0)
 		##	orbit ellipse
-		self.ellipse = sf.ConvexShape()
+		self.ellipse = None
 
 
 	##	Transform the data held by a json object into this Body. A 'quality' value can be given if the amount of vertices in the 

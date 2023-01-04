@@ -1,4 +1,4 @@
-from sfml import sf
+import pygame
 import json
 
 ##	small helper function
@@ -18,7 +18,7 @@ class Manager:
 
 	##	add a texture to the available resources
 	def load_tex(self, file):
-		self.textures[file] = sf.Texture.from_file(file)
+		self.textures[file] = pygame.image.load(file)
 		return self.textures[file]
 
 	##	add a font to the available resources

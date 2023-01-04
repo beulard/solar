@@ -1,4 +1,4 @@
-from sfml import sf
+import pygame
 
 ###	Handles the sfml window as well as the drawing of sprites and the window event loop. ###
 class Scene:
@@ -8,10 +8,11 @@ class Scene:
 	def __init__(self):
 		self.__dict__ = self.__shared_state
 		self.window = None
-		self.event_handler = None
 
-	def open_window(self, mode, name, style, context_settings):
-		self.window = sf.RenderWindow(mode, name, style, context_settings)
+	def open_window(self, size, title, antialias):
+		self.window = pygame.display.set_mode(size)
+		pygame.display.set_caption(title)
+		# Antialias
 
 	def set_window_icon(self, image):
 		self.window.icon = image.pixels
@@ -27,8 +28,8 @@ class Scene:
 		return self.window.is_open
 
 	##	clears the window with provided color
-	def clear(self, color = sf.Color.BLACK):
-		self.window.clear(color)
+	def clear(self, color=(0, 0, 0)):
+		self.window.fill(color)
 
 	##	returns default view
 	def default_view(self):
@@ -37,23 +38,6 @@ class Scene:
 	##	returns window size
 	def size(self):
 		return self.window.size
-
-	##	in case you want to replace the default event handling (escape and close button close the window), you can replace it with your 
-	##	own (which takes a sf.Window) in argument
-	def set_event_handler(self, handler):
-		self.event_handler = handler
-
-	def handle_events(self):
-		if self.event_handler is None:
-			for event in self.window.events:
-				##	shut down if the window is closed or if escape is pressed
-				if event == sf.CloseEvent:
-					self.window.close()
-				elif event == sf.KeyEvent:
-					if event.code == sf.Keyboard.ESCAPE:
-						self.window.close()
-		else:
-			self.event_handler(self.window)
 
 	##	draw a sprite with the provided view or the default one
 	def draw(self, sprite, view = None):
@@ -64,7 +48,7 @@ class Scene:
 		self.window.draw(sprite)
 
 	##	display the window
-	def render(self):
-		self.window.display()
+	def update(self):
+		pygame.display.flip()
 
 
